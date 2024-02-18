@@ -1,0 +1,14 @@
+extends ./sidebar.pug
+
+block header
+  h1=t('views.incomes.actions.addIncome')
+
+block main
+  .border.rounded-3.p-3.bg-white
+    +formFor()(action='/incomes' method='POST')
+      +select(sourcesOfIncomes, income, 'incomes', 'sourceIncomesId', errors)(type="text")
+      +input(income, 'incomes', 'date', errors)(type="date")
+      +input(income, 'incomes', 'name', errors)(type="text")
+      +input(income, 'incomes', 'amount', errors)(type="text")
+      +submit()(value=t('views.incomes.actions.add'))
+

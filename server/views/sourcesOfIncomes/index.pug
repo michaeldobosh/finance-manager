@@ -1,0 +1,20 @@
+extends ../incomes/sidebar.pug
+
+block header
+  h1=t('views.sourcesOfIncomes.actions.addSource')
+
+block main
+  block form
+    +formFor()(action='/sourcesOfIncomes' method='POST')
+      +input(sourceOfIncomes, 'sourcesOfIncomes', 'name', errors)(type="text")
+      +submit(value=t('views.sourcesOfIncomes.actions.add'))
+
+    .border.rounded-3.shadow.mt-5 
+      h2.fs-5.p-3.m-0.bg-white.border-bottom=t('layouts.application.sourcesOfIncomes')
+      ul.nav.list-group.list-group-flush
+        each item in sourcesOfIncomes
+          li.nav-item.list-group-item.py-0
+            .d-flex.justify-content-end
+              p.flex-grow-1.align-self-center.m-0=item.name
+              a.nav-link.me-2(href=`/sourcesOfIncomes/${item.id}/edit`)=t('views.sourcesOfIncomes.actions.edit')
+              a.nav-link.me-2(href=`/sourcesOfIncomes/${item.id}/delete`)=t('views.sourcesOfIncomes.actions.delete')

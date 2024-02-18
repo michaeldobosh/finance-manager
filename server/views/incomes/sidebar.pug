@@ -1,0 +1,28 @@
+extends ../layouts/application.pug
+
+
+block content
+  .container-fluid
+    .row.d-flex
+      .col-md-3.align-self-start.mt-5.card.p-0
+        block filter
+        .card-header.ps-4=t('layouts.application.incomeManagement')
+        ul.list-group.list-group-flush.nav
+          li.list-group-item.nav-item
+            a.nav-link(href=route('incomes'))=t('layouts.application.incomesJournal')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newSourceOfIncomes'))=t('layouts.application.sourcesOfIncomes')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newIncome'))=t('views.incomes.actions.addIncome')
+        .card-header.ps-4=t('layouts.application.incomesReport')
+        ul.list-group.list-group-flush.nav
+          li.list-group-item.nav-item
+            a.nav-link(href=route('monthlyIncomeReport'))=t('layouts.application.byMonth')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('annualIncomeReport'))=t('layouts.application.byYers')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('reportSourcesOfIncomes'))=t('layouts.application.bySourcesOfIncomes')
+      .col-9.pe-0.mt-5     
+        block main
+              
+      

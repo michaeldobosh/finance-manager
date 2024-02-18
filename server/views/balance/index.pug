@@ -1,0 +1,34 @@
+extends ./sidebar.pug
+
+block header
+  h1=t('layouts.application.balance')
+
+block main 
+  .card
+    .card-body.p-4.bg-light.shadow
+      .d-flex.justify-content-between.flex-wrap
+        p.el-top-left.fs-6.fw-bold.balance-header=t('layouts.application.assets')
+        p.el-top-right.fs-6.fw-bold.balance-header=t('layouts.application.amountRub')
+        if !assets.length
+          p.el-bottom-left.fs-6.balance-element=t('layouts.application.assets_non_exist')
+          p.el-bottom-right.fs-6.balance-element='-'
+        else
+          - const totalAssetAmount = assets.reduce((acc, { amount }) => acc + amount, 0)
+          each asset in assets
+            a.fs-6.balance-element(href=`/assets/${asset.id}/edit`)=asset.name
+            p.fs-6.balance-element=asset.amount
+          p.el-bottom-left.fs-6.balance-footer=t('layouts.application.assets_all')
+          p.el-bottom-right.fs-6.balance-footer=totalAssetAmount
+        p.el-top-left.fs-6.fw-bold.balance-header=t('layouts.application.debts')
+        p.el-top-right.fs-6.fw-bold.balance-header=t('layouts.application.amountRub')
+        if !debts.length
+          p.el-bottom-left.fs-6.balance-element=t('layouts.application.debts_non_exist')
+          p.el-bottom-right.fs-6.balance-element='-'
+        else
+          each debt in debts
+            p.fs-6.balance-element=t('layouts.application.assets')
+            p.fs-6.balance-element=t('layouts.application.amountRub')
+            p.el-bottom-left.fs-6.balance-element=t('layouts.application.debts_all')
+            p.el-bottom-right.fs-6.balance-element='-'
+
+    

@@ -1,0 +1,103 @@
+- const getInputName = (property) => `data[${property}]`
+- const getInputId = (property) => `data_${property}`
+ 
+mixin formFor(entity = null)
+  form&attributes(attributes)
+    block
+
+mixin input(entity, entityName, propertyName, errors = {})
+  - propertyErrors = _.get(errors, propertyName)
+  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
+  - inputId = getInputId(propertyName)
+  .mb-3(class=(errors[propertyName] && 'has-danger')).form-floating
+    input(
+      id= inputId
+      name=getInputName(propertyName)
+      class=classLine
+      placeholder=t(`views.${entityName}.${propertyName}`)
+      value=_.get(entity, propertyName, '')
+    )&attributes(attributes)
+    if !_.isEmpty(propertyErrors)
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+    label(for= inputId)=t(`views.${entityName}.${propertyName}`)
+
+mixin submit(form = null)
+  input(class='btn btn-outline-secondary' type='submit')&attributes(attributes)
+
+mixin buttonTo(action, method)
+  form(action=action, method="post")
+    input(name="_method" type="hidden" value=method)
+    input(type='submit')&attributes(attributes)
+
+mixin textarea(entity, entityName, propertyName)
+  .mb-3
+    - textareaId = getInputId(propertyName)
+      label(for=textareaId)=t(`views.${entityName}.${propertyName}`)
+      textarea(
+        id=textareaId
+        class='form-control'
+        name=getInputName(propertyName)
+      )&attributes(attributes)=_.get(entity, propertyName, '')
+
+mixin select(entity, creatingEntity, entityName, propertyName, errors = {})
+  .col-12.col-md
+    .input-group.mb-3
+      - propertyErrors = _.get(errors, propertyName)
+      - classLine = 'form-select' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
+      - selectId = getInputId(propertyName)
+        label(class='input-group-text' for=selectId)=t(`views.${entityName}.${propertyName.replace('Id', '')}`)
+        select(
+          id=selectId
+          class=classLine
+          name=getInputName(propertyName)
+        )&attributes(attributes)
+          if !creatingEntity.statusId
+            option=''
+          each item in entity
+            - isSelected = Number(item.id) === Number(creatingEntity[propertyName])
+            option(value=item.id selected=isSelected)=item.name
+        if !_.isEmpty(propertyErrors)
+          .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+
+
+mixin selectYear(entity, propertyName, queryYear)
+  .col-12.col-md
+    .input-group
+      - selectId = getInputId(propertyName)
+        label.fw-bold(class='input-group-text' for=selectId)=t('layouts.application.year')
+        select(
+          id=selectId
+          class='form-select'
+          name=propertyName
+        )&attributes(attributes)
+          - const years = _.uniq(entity.map(({ date }) => new Date(date).getFullYear()))
+          each year in years
+            if year == queryYear
+              option(value=year selected)=year
+            else
+              option(value=year)=year
+
+mixin renderData(amountBySourceCurrentYear, amountBySourcePreviosYear, classes = '')
+  - const diffYear = amountBySourceCurrentYear - amountBySourcePreviosYear;
+  - const diffAverage = average(amountBySourceCurrentYear, queryYears.second) - average(amountBySourcePreviosYear, queryYears.first);
+  td.border-end.text-center(class=classes)=amountBySourcePreviosYear
+  td.border-end.text-center(class=classes)=average(amountBySourcePreviosYear, queryYears.first)
+  td.border-end.text-center(class=classes)=amountBySourceCurrentYear
+  td.border-end.text-center(class=classes)=average(amountBySourceCurrentYear, queryYears.second)
+  td.border-end.text-center(class=classes)
+    .d-flex.px-0.justify-content-center.align-items-stretch
+      span(class=dinamicsClass(diffYear))=`${isPositive(diffYear)}${diffYear}`
+      span='/'
+      span(class=dinamicsClass(diffAverage))=`${isPositive(diffAverage)}${diffAverage}`
+
+mixin radio(entity, entityName, propertyName, propertyValue)
+  .mb-3
+    - const isChecked = user.gender === t(`views.${entityName}.${propertyValue}`)
+    input(
+      id=getInputId(propertyName)
+      name=getInputName(propertyName)
+      class='form-check-input'
+      value=t(`views.${entityName}.${propertyValue}`)
+      checked=isChecked
+    )&attributes(attributes)
+    label.ms-1.form-check-label(for=propertyName)=t(`views.${entityName}.${propertyValue}`)

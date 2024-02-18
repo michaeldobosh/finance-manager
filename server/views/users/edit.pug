@@ -1,0 +1,16 @@
+extends ../layouts/application.pug
+
+block header 
+  h1=t('views.users.edit.editUser')
+
+block content
+  form(action=`/users/${user.id}` method='post')
+    +input(user, 'users', 'nickName', errors)(type="text")
+    +input(user, 'users', 'age', errors)(type="number" min=0)
+    .d-flex 
+      p.me-3=t('views.users.gender') + ':'
+      +radio(user, 'users', 'gender', 'male', errors)(type="radio")
+      +radio(user, 'users', 'gender', 'female', errors)(type="radio").ms-3
+    +input(user, 'users', 'email', errors)(type="text")
+    +input(user, 'users', 'password', errors)(type="password")
+    +buttonTo(`/users/${user.id}`, 'PATCH')(value=t('views.users.edit.submit')).btn.btn-primary

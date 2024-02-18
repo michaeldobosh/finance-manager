@@ -1,0 +1,15 @@
+extends ../layouts/application.pug
+
+block header
+  .container.w-min-50.text-center
+    h1= t('views.session.new.signIn')
+
+block content
+  .container.d-flex.justify-content-around.p-5.border.rounded-3.w-75.shadow.bg-light
+    .container
+      img(src=assetPath('assets/join.jpg') alt="task manager" width="75%")
+    .container
+      +formFor()(action=route('session') method='post')
+        +input(signInForm, 'users', 'email', errors)(type="text")
+        +input(signInForm, 'users', 'password')(type="password")
+        +submit(signInForm)(value=t('views.session.new.submit'))

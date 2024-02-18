@@ -1,0 +1,14 @@
+extends ./sidebar.pug
+
+block header
+  h1=t('views.expenses.actions.addExpense')
+
+block main
+  .border.rounded-3.p-3.bg-white
+    +formFor()(action='/expenses' method='POST')
+      +select(sourcesOfExpenses, expense, 'expenses', 'sourceExpensesId', errors)(type="text")
+      +input(expense, 'expenses', 'date', errors)(type="date")
+      +input(expense, 'expenses', 'name', errors)(type="text")
+      +input(expense, 'expenses', 'amount', errors)(type="text")
+      +submit()(value=t('views.expenses.actions.add'))
+

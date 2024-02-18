@@ -1,0 +1,32 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=`${t('layouts.application.expensesReport')} / ${t('layouts.application.bySourcesOfExpenses')}, ${t('layouts.application.amount').toLowerCase()}`
+
+block main
+  h2.fs-3=`${t('layouts.application.aboutExpenses')}с ${new Date(dateQuery.begin).toLocaleDateString('ru-RU')} по ${new Date(dateQuery.end).toLocaleDateString('ru-RU')}: ${amountByDate.total} ${t('layouts.application.valuta').toLowerCase()}`
+  each expensesBySource, i in expensesBySources
+    - const percent = String((expensesBySource.totalAmountBySource / amountByDate.total * 100).toFixed(0))
+    - const classes = (percent) => percent <= 20 ? 'bg-success' : percent <= 30 ? 'bg-warning text-dark' : 'bg-danger'
+    .d-flex.border.shadow.bg-white.align-items-center
+      .col.border-end.p-2
+        span=expensesBySource.name
+      .col.p-2
+        .progress.me-2(id=i role='progressbar' aria-valuenow=`${expensesBySource.totalAmountBySource}` aria-valuemin='0' aria-valuemax=`${amountByDate.max}`)
+          .progress-bar(class=classes(percent) style=`width: ${percent < 6 ? 6 : percent}%`)=`${percent}%`
+      .col.p-2 
+        span=expensesBySource.totalAmountBySource
+
+
+block filter
+  .card-header.ps-4=t('layouts.application.timestamp')
+  ul.list-group.list-group-flush.nav
+    li.list-group-item.nav-item
+      +formFor()(action='/reportSourcesOfExpenses' method='GET')
+        .d-flex.flex-wrap.justify-content-between
+          span=t('layouts.application.begin')
+          input(type='date' name='begin' value=dateQuery.begin)
+          span=t('layouts.application.end')
+          input(type='date' name='end' value=dateQuery.end)
+        input(class='btn btn-outline-primary btn-sm mt-3', type='submit' value=t('layouts.application.show'))
+

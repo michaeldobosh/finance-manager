@@ -1,0 +1,73 @@
+extends ./sidebar.pug
+
+
+block header
+  h1=t('layouts.application.incomesJournal')
+
+block main          
+  table.bg-white.table.border.border-2.shadow
+    thead
+      tr
+        th=t('layouts.application.sourceOfIncomes')
+        th=t('layouts.application.incomes')
+        th=t('layouts.application.amount')
+        th=t('layouts.application.date')
+    tbody
+      - const filterSourcesByQuerySource = sourcesQueryIds.length ? sourcesOfIncomes.filter((source) => sourcesQueryIds.includes(source.id)) : sourcesOfIncomes
+      - const sourcesIds = filterSourcesByQuerySource.map(({ id }) => id);
+      - const incomesQuerySources = sourcesIds.length ? incomes.filter((income) => sourcesIds.includes(income.sourceIncomesId)) : sourcesOfIncomes
+      each income in incomesQuerySources
+        - const source = sourcesOfIncomes.find((el) => Number(el.id) == Number(income.sourceIncomesId))
+        tr
+          if source
+            td=source.name
+          else
+            td
+          td.nameExpense
+            a.link-offset-2.link-underline.link-underline-opacity-0.p-0(href=`/incomes/${income.id}/edit`)=income.name
+            
+          td=income.amount
+          td=new Date(income.date).toLocaleDateString('ru-RU')
+      tr.table-secondary
+        - const amount = incomesQuerySources.reduce((acc, income) => acc + income.amount, 0)
+        th(rowspan='3')='Итого:'
+        th
+        th(rowspan='2')=amount
+        th
+
+block filter
+  .accordion(id='accordionPanelsStayOpenExample')
+    .accordion-item
+      h2.accordion-header
+        .accordion-button.collapsed.ps-4(
+          type='button'
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseOne"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseOne"
+        )=t('layouts.application.filterOptions')
+      .accordion-collapse.collapse(id="panelsStayOpen-collapseOne" aria-labelledby="panelsStayOpen-headingOne")
+        .accordion-body.p-3
+          +formFor()(action='/incomes' method='GET')
+            h3.fs-6=t('layouts.application.sourcesOfIncomes')
+            ul
+              each source in sourcesOfIncomes
+                - const isChecked = sourcesQueryIds.includes(source.id)
+                li.form-check
+                  input.form-check-input.me-3(
+                    type='checkbox'
+                    id=`source_${source.id}`
+                    name=`source_${source.id}`
+                    checked=isChecked
+                  )
+                  label.form-check-label(for=`source_${source.id}`)=source.name
+            h3.fs-6.mt-3=t('layouts.application.timestamp')
+            .d-flex.flex-wrap.justify-content-between
+              - const minValue = dateQuery.begin ?? incomes.at(-1)?.date;
+              - const maxValue = dateQuery.end ?? incomes[0]?.date;
+              span=t('layouts.application.begin')
+              input(type='date' name='begin' value=minValue)
+              span=t('layouts.application.end')
+              input(type='date' name='end' value=maxValue)
+            input(class='btn btn-outline-primary btn-sm mt-3', type='submit' value=t('layouts.application.show'))
+          //-   script(src='assets/main.js')

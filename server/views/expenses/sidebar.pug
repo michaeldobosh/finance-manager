@@ -1,0 +1,32 @@
+extends ../layouts/application.pug
+
+
+block content
+  .container-fluid
+    .row.d-flex
+      .col-md-3.align-self-start.mt-5.card.p-0
+        block filter
+        .card-header.ps-4=t('layouts.application.expenseManagement')
+        ul.list-group.list-group-flush.nav
+          li.list-group-item.nav-item
+            a.nav-link(href=route('expenses'))=t('layouts.application.expensesJournal')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newCategory'))=t('layouts.application.categories')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newSourceOfExpenses'))=t('layouts.application.sourcesOfExpenses')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newExpense'))=t('views.expenses.actions.addExpense')
+        .card-header.ps-4=t('layouts.application.expensesReport')
+        ul.list-group.list-group-flush.nav
+          li.list-group-item.nav-item
+            a.nav-link(href=route('reportMonth'))=t('layouts.application.byMonth')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('reportYear'))=t('layouts.application.byYers')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('reportCategory'))=t('layouts.application.byCategories')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('reportSourcesOfExpenses'))=t('layouts.application.bySourcesOfExpenses')
+      .col-9.pe-0.mt-5     
+        block main
+              
+      

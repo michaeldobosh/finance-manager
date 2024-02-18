@@ -1,0 +1,21 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=t('views.sourcesOfExpenses.actions.add')
+
+block main
+  block form
+    +formFor()(action='/sourcesOfExpenses' method='POST')
+      +select(categories, sourceOfExpenses, 'sourcesOfExpenses', 'categoryId', errors)(type="text")
+      +input(sourceOfExpenses, 'sourcesOfExpenses', 'name', errors)(type="text")
+      +submit(value=t('views.sourcesOfExpenses.actions.addSource'))
+
+    .border.rounded-3.shadow.mt-5 
+      h2.fs-5.p-3.m-0.bg-white.border-bottom=t('layouts.application.sourcesOfExpenses')
+      ul.nav.list-group.list-group-flush
+        each item in sourcesOfExpenses
+          li.nav-item.list-group-item.py-0
+            .d-flex.justify-content-end
+              p.flex-grow-1.align-self-center.m-0=item.name
+              a.nav-link.me-2(href=`/sourcesOfExpenses/${item.id}/edit`)=t('views.sourcesOfExpenses.actions.edit')
+              a.nav-link.me-2(href=`/sourcesOfExpenses/${item.id}/delete`)=t('views.sourcesOfExpenses.actions.delete')

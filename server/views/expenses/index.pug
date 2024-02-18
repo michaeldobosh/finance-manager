@@ -1,0 +1,94 @@
+extends ./sidebar.pug
+
+
+block header
+  h1=t('layouts.application.expensesJournal')
+
+block main          
+  table.bg-white.table.border.border-2.shadow
+    thead
+      tr
+        th=t('layouts.application.categoriesOfExpenses')      
+        th=t('layouts.application.sourceOfExpenses')
+        th=t('layouts.application.expenses')
+        th=t('layouts.application.amount')
+        th=t('layouts.application.date')
+    tbody
+      - const filterSourcesByQueryCat = categoriesQuery.length ? sourcesOfExpenses.filter((source) => categoriesQuery.includes(Number(source?.categoryId))) : sourcesOfExpenses
+      - const filterSourcesByQuerySource = sourcesQuery.length ? filterSourcesByQueryCat.filter((source) => sourcesQuery.includes(Number(source.id))) : filterSourcesByQueryCat
+      - const sourcesBySources = filterSourcesByQuerySource.map(({ id }) => id);
+      - const hasQuerySources = expenses.filter((expense) => sourcesBySources.includes(Number(expense?.sourceExpensesId)))
+      - const expensesBySources = !categoriesQuery.length && !sourcesQuery.length ? expenses : hasQuerySources
+      each expense in expensesBySources
+        - const source = sourcesOfExpenses.find((el) => Number(el?.id) == Number(expense?.sourceExpensesId))
+        - const category = categories.find((el) => Number(el?.id) == Number(source?.categoryId))
+        tr
+          if category
+            td=category.name
+          else
+            td
+          if source
+            td=source.name
+          else
+            td
+          td.nameExpense
+            a.link-offset-2.link-underline.link-underline-opacity-0.p-0(href=`/expenses/${expense.id}/edit`)=expense.name
+            
+          td=expense.amount
+          td=new Date(expense.date).toLocaleDateString('ru-RU')
+      tr.table-secondary
+        - const amount = expensesBySources.reduce((acc, exp) => acc + exp.amount, 0)
+        th(rowspan='3')='Итого:'
+        th
+        th
+        th(rowspan='2')=amount
+        th
+
+block filter
+  .accordion(id='accordionPanelsStayOpenExample')
+    .accordion-item
+      h2.accordion-header
+        .accordion-button.collapsed.ps-4(
+          type='button'
+          data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseOne"
+          aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseOne"
+        )=t('layouts.application.filterOptions')
+      .accordion-collapse.collapse(id="panelsStayOpen-collapseOne" aria-labelledby="panelsStayOpen-headingOne")
+        .accordion-body.p-3
+          +formFor()(action='/expenses' method='GET')
+            h3.fs-6=t('layouts.application.categoriesOfExpenses')
+            ul
+              each category in categories
+                - const isChecked = categoriesQuery.includes(category.id)
+                li.form-check
+                  input.form-check-input.me-3(
+                    type='checkbox'
+                    id=`category_${category.id}`
+                    name=`category_${category.id}`
+                    checked=isChecked
+                  )
+                  label.form-check-label(for=`category_${category.id}`)=category.name
+            h3.fs-6.mt-3=t('layouts.application.sourcesOfExpenses')
+            ul
+              each source in sourcesOfExpenses
+                - const isChecked = sourcesQuery.includes(source.id)
+                li.form-check
+                  input.form-check-input.me-3(
+                    type='checkbox'
+                    id=`source_${source.id}`
+                    name=`source_${source.id}`
+                    checked=isChecked
+                  )
+                  label.form-check-label(for=`source_${source.id}`)=source.name
+            h3.fs-6.mt-3=t('layouts.application.timestamp')
+            .d-flex.flex-wrap.justify-content-between
+              - const minValue = dateQuery?.begin ?? expenses?.at(-1)?.date;
+              - const maxValue = dateQuery?.end ?? expenses[0]?.date;
+              span=t('layouts.application.begin')
+              input(type='date' name='begin' value=minValue)
+              span=t('layouts.application.end')
+              input(type='date' name='end' value=maxValue)
+            input(class='btn btn-outline-primary btn-sm mt-3', type='submit' value=t('layouts.application.show'))
+          //-   script(src='assets/main.js')

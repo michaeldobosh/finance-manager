@@ -1,0 +1,13 @@
+extends ../balance/sidebar.pug
+
+block header
+  h1=t('views.assets.actions.editAsset')
+
+block main
+  .border.rounded-3.p-3.bg-white
+    +formFor()(action=`/assets/${asset.id}` method='POST')
+      +input(asset, 'assets', 'name', errors)(type="text")
+      +input(asset, 'assets', 'amount', errors)(type="number")
+      .d-flex
+        +buttonTo(`/assets/${asset.id}`, 'PATCH')(value=t('views.assets.actions.edit')).btn.btn-outline-secondary
+        +buttonTo(`/assets/${asset.id}`, 'DELETE')(value=t('views.assets.actions.delete')).btn.btn-danger.ms-2

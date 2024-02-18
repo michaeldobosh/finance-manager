@@ -1,0 +1,17 @@
+extends ../layouts/application.pug
+
+block header
+  .container.w-min-50.text-center
+    h1= t('views.users.new.signUp')
+
+block content
+  .container.d-flex.justify-content-around.p-5.border.rounded-3.w-75.shadow.bg-light
+    .container
+      img(src=assetPath('assets/reg.png') alt="task manager"  width="75%")
+    .container
+      +formFor()(action='/users' method='POST')
+        +input(user, 'users', 'nickName', errors)(type="text")
+        //- +input(user, 'users', 'age', errors)(type="number" min=0)
+        +input(user, 'users', 'email', errors)(type="text")
+        +input(user, 'users', 'password', errors)(type="password")
+        +submit(user)(value=t('views.users.new.submit'))

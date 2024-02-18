@@ -1,0 +1,18 @@
+extends ../layouts/application.pug
+
+
+block content
+  .container-fluid
+    .row.d-flex
+      .col-md-3.align-self-start.mt-5.card.p-0
+        block filter
+        .card-header.ps-4=t('layouts.application.balance')
+        ul.list-group.list-group-flush.nav
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newAsset'))=t('views.assets.actions.addAsset')
+          li.list-group-item.nav-item
+            a.nav-link(href=route('newAsset'))=t('views.debts.actions.addDebt')
+      .col-9.pe-0.mt-5     
+        block main
+              
+      

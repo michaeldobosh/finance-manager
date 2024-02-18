@@ -1,0 +1,9 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=t('views.sourcesOfExpenses.actions.deleteSource')
+
+block content
+  .d-flex.pt-3
+    +buttonTo(`/sourcesOfExpenses/${sourceOfExpenses.id}`, 'DELETE')(value=t('views.sourcesOfExpenses.actions.delete')).btn.btn-danger
+    a.btn.btn-secondary.ms-2(href=`/sourcesOfExpenses`)=t('views.sourcesOfExpenses.actions.cancel')

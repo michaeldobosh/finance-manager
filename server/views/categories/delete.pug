@@ -1,0 +1,9 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=t('views.categories.actions.deleteCategory')
+
+block content
+  .d-flex.pt-3
+    +buttonTo(`/categories/${category.id}`, 'DELETE')(value=t('views.categories.actions.delete')).btn.btn-danger
+    a.btn.btn-secondary.ms-2(href=`/categories`)=t('views.categories.actions.cancel')

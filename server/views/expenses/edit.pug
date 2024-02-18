@@ -1,0 +1,15 @@
+extends ./sidebar.pug
+
+block header
+  h1=t('views.expenses.actions.edit')
+
+block main
+  .border.rounded-3.p-3.bg-white
+    +formFor()(action=`/expenses/${expense.id}` method='POST')
+      +select(sourcesOfExpenses, expense, 'expenses', 'sourceExpensesId', errors)(type="text")
+      +input(expense, 'expenses', 'date', errors)(type="date")
+      +input(expense, 'expenses', 'name', errors)(type="text")
+      +input(expense, 'expenses', 'amount', errors)(type="text")
+      .d-flex
+        +buttonTo(`/expenses/${expense.id}`, 'PATCH')(value=t('views.expenses.actions.edit')).btn.btn-outline-secondary.me-2
+        +buttonTo(`/expenses/${expense.id}`, 'DELETE')(value=t('views.expenses.actions.delete')).btn.btn-outline-danger

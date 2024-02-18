@@ -1,0 +1,23 @@
+extends ../layouts/application.pug
+
+block header
+  .d-flex.flex-row.min-weight-50.align-items-center
+    h1.me-2=t('layouts.application.profile_card')
+    a(href=`/users/${user.id}/edit` class='btn btn-sm btn-outline-secondary me-2')=t('views.users.actions.edit')
+    a(href=`/users/${user.id}/delete` class='btn btn-sm btn-outline-danger')=t('views.users.actions.delete')
+
+block content
+  .mt-3.p-5.shadow.bg-white
+    .row
+      .border-start
+        p.lead.my-1= `${t('views.users.nickName')}: ${user.nickName}`
+        p.lead.my-1= `${t('views.users.email')}: ${user.email}`       
+        p.lead.my-1= `${t('views.users.age')}: ${user.age ? user.age : '-'}`
+        p.lead.my-1= `${t('views.users.gender')}: ${user.gender ? user.gender : '-'}`
+        p.lead.my-1= `${t('views.users.createdAt')}: ${formatDate(user.createdAt)}`
+        //- p.lead.my-1= `${t('views.users.updatedAt')}: ${formatDate(user.updatedAt)}`
+        //- h2.fs-4.mt-3= `${t('layouts.application.balance')}`
+        //- p.lead.my-1= `${t('layouts.application.assets')}: ***`
+        //- p.lead.my-1= `${t('layouts.application.obligations')}: ***`
+        //- p.lead.my-1.fw-normal= `${t('layouts.application.capital')}/${t('layouts.application.debt')}: ***`
+          

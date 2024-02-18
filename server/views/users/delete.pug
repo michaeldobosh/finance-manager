@@ -1,0 +1,6 @@
+extends ../users/index.pug
+
+block header
+  .d-flex
+    a.btn.btn-sm.btn-primary.me-3(href=route('profile'))= t('views.users.actions.cancel')
+    +buttonTo(`/users/${user.id}`, 'DELETE')(value=t('views.users.actions.confirm')).btn.btn-sm.btn-danger

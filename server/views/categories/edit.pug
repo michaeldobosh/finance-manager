@@ -1,0 +1,10 @@
+extends ./index.pug
+
+block header
+  h1=t('views.categories.actions.editCategory')
+
+block form
+  +formFor()(action=`/categories/${category.id}` method='POST')
+    +input(category, 'categories', 'name', errors)(type="text")
+    +buttonTo(`/categories/${category.id}`, 'PATCH')(value=t('views.categories.actions.edit')).btn.btn-outline-secondary
+

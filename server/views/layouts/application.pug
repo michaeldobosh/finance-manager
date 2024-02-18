@@ -1,0 +1,52 @@
+include ../mixins/forms.pug
+
+doctype html
+html(lang="en")
+  head
+    title Finance Manager
+    script(src=assetPath('main.js'))
+    link(href=assetPath('main.css') rel="stylesheet")
+    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+  body.d-flex.flex-column.min-vh-100.bg-light
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-secondary.mb-3.shadow-sm.d-block
+      .container.min-w-75
+        a.navbar-brand(href=route('root'))= t('appName')
+        button.navbar-toggler(data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent")
+          span.navbar-toggler-icon
+        .collapse.navbar-collapse(id="navbarToggleExternalContent")
+          .container-fluid
+          ul.navbar-nav
+            if isAuthenticated()
+              li.nav-item
+                a.nav-link.text-nowrap(href=route('expenses'))= t('layouts.application.expenses')
+              li.nav-item
+                a.nav-link.text-nowrap(href=route('incomes'))= t('layouts.application.incomes')
+              //- li.nav-item
+                //- a.nav-link.text-nowrap(href=route('balance'))= t('layouts.application.balance')
+              li.nav-item
+                a.nav-link(href=route('profile'))= t('layouts.application.profile')
+              li.nav-item
+                +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
+            else
+              li.nav-item
+                a.nav-link(href=route('newSession'))= t('layouts.application.signIn')
+              li.nav-item
+                a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
+    .container.flex-grow-1
+
+      each messages, type in reply.flash() || []
+        each message in messages
+          div.alert(class=`alert-${getAlertClass(type)}`)= message
+
+      block header
+      block content
+
+    footer
+      nav.navbar.navbar-expand-lg.navbar-dark.bg-secondary.shadow-sm.d-block
+        .container.min-w-75
+          a.navbar-brand(href=route('root'))= t('appName')
+          button.navbar-toggler(data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent")
+            span.navbar-toggler-icon
+          .collapse.navbar-collapse(id="navbarToggleExternalContent")
+            .container-fluid
+           

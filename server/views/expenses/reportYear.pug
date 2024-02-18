@@ -1,0 +1,58 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=`${t('layouts.application.expensesReport')} / ${t('layouts.application.byYers')}, ${t('layouts.application.amount').toLowerCase()}`
+
+block main
+  table.table.table-white.border.border-2.shadow
+    thead.text-center
+      tr.align-middle
+        th.border-end.width-th(rowspan='2')=t('layouts.application.categoriesOfExpenses')      
+        th.border-end.width-th(rowspan='2')=t('layouts.application.sourceOfExpenses')
+        +formFor()(action='/reportYear' method='GET').d-flex.flex-row.formYear
+          th.border-end.p-0(colspan='2')=year
+            +selectYear(expenses, 'firstYear', queryYears.first, errors)(type="text").selectYear.fw-bold
+          th.border-end.p-0(colspan='2')=year
+            +selectYear(expenses, 'secondYear', queryYears.second, errors)(type="text").selectYear.fw-bold
+            script.
+              const selectYears = document.querySelectorAll('.selectYear');
+              const form = document.querySelector('.formYear');
+              selectYears.forEach((year) => year.addEventListener('change', () => {
+                form.submit();
+              }));
+          th.border-end(rowspan='2')=t('layouts.application.dynamics')
+        tr.align-middle
+            th.border-end.w-150=t('layouts.application.forYear')
+            th.border-end=t('layouts.application.forMonth')
+            th.border-end=t('layouts.application.forYear')
+            th.border-end=t('layouts.application.forMonth')
+      tbody.table-group-divider
+        - const expensesByYear = (year) => expenses.filter((exp) => Number(year) === new Date(exp.date).getFullYear())
+        - const dinamicsClass = (value) => value > 0 ? 'positive' : value < 0 ? 'negative' : '';
+        - const isPositive = (value) => value > 0 ? '+' : '';
+        - const average = (amountYear, numYear) => Math.round(Number(numYear) !== currentYear ? amountYear / 12 : amountYear / data[numYear].length)
+        - const currentYear = new Date().getFullYear();
+        each source, i in sourcesOfExpenses
+          - const category = categories.find((el) => Number(el?.id) === Number(source?.categoryId))
+          - const sourcesOfThisCategory = sourcesOfExpenses.filter((source) => source?.categoryId === category?.id).map((source) => source.id)
+          - const totalAmountBySource = (exps) => exps.filter((exp) => exp.sourceExpensesId === source.id).reduce((acc, exp) => acc + exp.amount, 0)
+          - const totalAmountByCategory = (exps) => exps.filter((exp) => sourcesOfThisCategory.includes(exp.sourceExpensesId)).reduce((acc, exp) => acc + exp.amount, 0)
+          - const isNextNewCategory = source?.categoryId !== sourcesOfExpenses[i + 1]?.categoryId
+          tr
+            td.border-end=category.name
+            td.border-end=source.name
+            - const amountBySourceCurrentYear = expensesByYear(queryYears.second).filter((exp) => exp.sourceExpensesId === source.id).reduce((acc, exp) => acc + exp.amount, 0)
+            - const amountBySourcePreviosYear = expensesByYear(queryYears.first).filter((exp) => exp.sourceExpensesId === source.id).reduce((acc, exp) => acc + exp.amount, 0)
+            +renderData(amountBySourceCurrentYear, amountBySourcePreviosYear)
+          if isNextNewCategory
+              tr
+                th.bg-light.border-end(colspan='2')=category.name
+                - const amountByCategoryCurrentYear = expensesByYear(queryYears.second).filter((exp) => sourcesOfThisCategory.includes(exp.sourceExpensesId)).reduce((acc, exp) => acc + exp.amount, 0)
+                - const amountByCategoryPreviosYear = expensesByYear(queryYears.first).filter((exp) => sourcesOfThisCategory.includes(exp.sourceExpensesId)).reduce((acc, exp) => acc + exp.amount, 0)
+                +renderData(amountByCategoryCurrentYear, amountByCategoryPreviosYear, 'bg-light')
+        tr.table-secondary
+          th.border-end.border-light(colspan='2')='Итого:'
+          - const amountByCurrentYear = expensesByYear(queryYears.second).reduce((acc, exp) => acc + exp.amount, 0)
+          - const amountByPreviosYear = expensesByYear(queryYears.first).reduce((acc, exp) => acc + exp.amount, 0)
+          +renderData(amountByCurrentYear, amountByPreviosYear, 'border-light')
+        script(src='assets/main.js')

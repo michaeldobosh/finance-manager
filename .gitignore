@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+node_modules/
+coverage
+build/
+dist/
+tmp/
+temp/
+database.sqlite
+.env

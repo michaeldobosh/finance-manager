@@ -1,0 +1,15 @@
+extends ./sidebar.pug
+
+block header
+  h1=t('views.incomes.actions.edit')
+
+block main
+  .border.rounded-3.p-3.bg-white
+    +formFor()(action=`/incomes/${income.id}` method='POST')
+      +select(sourcesOfIncomes, income, 'incomes', 'sourceIncomesId', errors)(type="text")
+      +input(income, 'incomes', 'date', errors)(type="date")
+      +input(income, 'incomes', 'name', errors)(type="text")
+      +input(income, 'incomes', 'amount', errors)(type="text")
+      .d-flex
+        +buttonTo(`/incomes/${income.id}`, 'PATCH')(value=t('views.incomes.actions.edit')).btn.btn-outline-secondary.me-2
+        +buttonTo(`/incomes/${income.id}`, 'DELETE')(value=t('views.incomes.actions.delete')).btn.btn-outline-danger

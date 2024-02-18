@@ -1,0 +1,9 @@
+extends ./index.pug
+
+block header
+  h1=t('views.sourcesOfIncomes.actions.editSource')
+
+block form
+  +formFor()(action=`/sourcesOfIncomes/${sourceOfIncomes.id}` method='POST')
+    +input(sourceOfIncomes, 'sourcesOfIncomes', 'name', errors)(type="text")
+    +buttonTo(`/sourcesOfIncomes/${sourceOfIncomes.id}`, 'PATCH')(value=t('views.sourcesOfIncomes.actions.edit')).btn.btn-outline-secondary

@@ -1,0 +1,20 @@
+extends ../expenses/sidebar.pug
+
+block header
+  h1=t('views.categories.actions.add')
+
+block main
+  block form
+    +formFor()(action='/categories' method='POST')
+      +input(category, 'categories', 'name', errors)(type="text")
+      +submit(value=t('views.categories.actions.addCategory'))
+        
+    .border.rounded-3.shadow.mt-5 
+      h2.fs-5.p-3.m-0.bg-white.border-bottom=t('layouts.application.categories')
+      ul.nav.list-group.list-group-flush
+        each item in categories
+          li.nav-item.list-group-item.py-0
+            .d-flex.justify-content-end
+              p.flex-grow-1.align-self-center.m-0=item.name
+              a.nav-link.me-2(href=`/categories/${item.id}/edit`)=t('views.categories.actions.edit')
+              a.nav-link.me-2(href=`/categories/${item.id}/delete`)=t('views.categories.actions.delete')

@@ -1,0 +1,47 @@
+extends ../incomes/sidebar.pug
+
+block header
+  h1=`${t('layouts.application.incomesReport')} / ${t('layouts.application.byMonth')}, ${t('layouts.application.amount').toLowerCase()}`
+
+block main          
+  table.table.table-white.border.border-2.shadow
+    thead.text-center
+      tr.align-middle    
+        th.border-end.width-th(rowspan='2')=t('layouts.application.sourceOfIncomes')
+        th.border-end.p-0(colspan=data[queryYear].length)
+          +formFor()(action='/monthlyIncomeReport' method='GET').d-flex.flex-row.formYear
+            +selectYear(incomes, 'date', errors)(type="text").selectYear.fw-bold
+          script.
+            const selectYear = document.querySelector('.selectYear');
+            const form = document.querySelector('.formYear');
+            selectYear.addEventListener('change', () => {
+              form.submit();
+            });
+        th.border-end.width-th(rowspan='2')=t('layouts.application.total')
+        th.width-th(rowspan='2')=t('layouts.application.average')
+      tr.align-middle
+        each month in data[String(queryYear)]
+          th.border-end=month
+      tbody.table-group-divider
+        - const incomesByYear = (year) => incomes.filter((income) => Number(year) === new Date(income.date).getFullYear())
+        - const incomesByMonth = (month) => incomesByYear(queryYear).filter((income) => month === new Date(income.date).getMonth() + 1)
+        
+        each source, i in sourcesOfIncomes
+          - incomesBySource = incomes.filter((income) => income.sourceIncomesId === source.id)
+          - const totalAmountBySource = incomesBySource.reduce((acc, income) => acc + income.amount, 0)
+          tr
+            td.border-end=source.name
+            each month in data[queryYear]
+              - const amountBySource = incomesByMonth(month).filter((income) => income.sourceIncomesId === source.id).reduce((acc, income) => acc + income.amount, 0)
+              td.border-end.text-center=amountBySource
+            th.border-end.text-center=totalAmountBySource
+            td.border-end.text-center=Math.round(totalAmountBySource / data[queryYear].length)
+        tr.table-secondary
+          th.border-end.border-light='Итого:'
+          each month in data[queryYear]
+            - const amountTotal = incomesByMonth(month).reduce((acc, income) => acc + income.amount, 0)
+            th.border-end.border-light.text-center=amountTotal
+          - const amountTotalByYear = incomesByYear(queryYear).reduce((acc, income) => acc + income.amount, 0)
+          th.border-end.border-light.text-center=amountTotalByYear
+          th.border-end.border-light.text-center=Math.round(amountTotalByYear / data[queryYear].length)
+          script(src='assets/main.js')

@@ -1,0 +1,39 @@
+extends ../layouts/application.pug
+
+block content
+  .card
+    .card-body.p-5.bg-light.shadow-lg 
+      - const greetings = isAuthenticated() ? user.nickName : t('views.welcome.index.dear_guest')
+      .display-4= t('views.welcome.index.hello') + greetings
+      p.lead= t('views.welcome.index.description')
+      hr
+      .d-flex.flex-wrap.justify-content-between.align-items-start
+        .card(style='width: 300px')
+          img.card-img-top(src=assetPath('assets/expenses.jpg'))
+          .card-body
+            h5.card-title=t('views.expenses.actions.addExpense')
+            p.card-text=t('views.expenses.description')
+          ul.list-group.list-group-flush.nav
+            li.list-group-item.nav-item 
+              a.inline.nav-link(href=route('newCategory'))=t('views.categories.actions.add')
+              a.inline.nav-link(href=route('newSourceOfExpenses'))=t('views.sourcesOfExpenses.actions.add')
+              a.inline.nav-link(href=route('newExpense'))=t('views.expenses.actions.addExpense')
+        .card(style='width: 300px')
+          img.card-img-top(src=assetPath('assets/incomes.jpg'))
+          .card-body
+            h5.card-title=t('views.incomes.actions.addIncome')
+            p.card-text=t('views.incomes.description')
+          ul.list-group.list-group-flush.nav
+            li.list-group-item.nav-item 
+              a.inline.nav-link(href=route('newSourceOfIncomes'))=t('views.sourcesOfIncomes.actions.addSource')
+              a.inline.nav-link(href=route('newIncome'))=t('views.incomes.actions.addIncome')
+        .card(style='width: 300px')
+          img.card-img-top(src=assetPath('assets/balance.jpeg'))
+          .card-body
+            h5.card-title=t('layouts.application.balance')
+            p.card-text=t('views.balance.description')
+          ul.list-group.list-group-flush.nav
+            li.list-group-item.nav-item 
+              p.fst-italic= t('layouts.application.in_developing')
+      hr
+
