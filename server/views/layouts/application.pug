@@ -1,12 +1,6 @@
-include ../mixins/forms.pug
+extends ../index.pug
 
-doctype html
-html(lang="en")
-  head
-    title Finance Manager
-    script(src=assetPath('main.js'))
-    link(href=assetPath('main.css') rel="stylesheet")
-    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+block layouts
   body.d-flex.flex-column.min-vh-100.bg-light
     nav.navbar.navbar-expand-lg.navbar-dark.bg-secondary.mb-3.shadow-sm.d-block
       .container.min-w-75
@@ -37,7 +31,7 @@ html(lang="en")
       each messages, type in reply.flash() || []
         each message in messages
           div.alert(class=`alert-${getAlertClass(type)}`)= message
-
+        
       block header
       block content
 
